@@ -1,0 +1,128 @@
+/*
+  SmokeDisplay.cpp - Library for salvaged smoke displays.
+  Created by DURUCZ Béla, July 2, 2026.
+*/
+
+#include "Arduino.h"
+#include "SmokeDisplay.h"
+#include "6pin-2.5digit-6num.h"
+
+
+uint32_t segmentValues[24] = {DISPLAY_1_B_PINS, DISPLAY_1_C_PINS,
+    DISPLAY_2_A_PINS, DISPLAY_2_B_PINS, DISPLAY_2_C_PINS, DISPLAY_2_D_PINS, DISPLAY_2_E_PINS, DISPLAY_2_F_PINS, DISPLAY_2_G_PINS,
+    DISPLAY_3_A_PINS, DISPLAY_3_B_PINS, DISPLAY_3_C_PINS, DISPLAY_3_D_PINS, DISPLAY_3_E_PINS, DISPLAY_3_F_PINS, DISPLAY_3_G_PINS,
+    DISPLAY_THUNDER_PINS, DISPLAY_DROPLET_PINS,
+    DISPLAY_NUM_1_PINS, DISPLAY_NUM_2_PINS, DISPLAY_NUM_3_PINS, DISPLAY_NUM_4_PINS, DISPLAY_NUM_5_PINS, DISPLAY_NUM_6_PINS};
+
+DisplayStag6::DisplayStag6(int pinA, int pinB, int pinC, int pinD, int pinE, int pinF) { 
+    pins[0] = pinA;
+    pins[1] = pinB;
+    pins[2] = pinC;
+    pins[3] = pinD;
+    pins[4] = pinE;
+    pins[5] = pinF;
+}
+
+void DisplayStag6::begin() {
+    clearPins();
+    currentSegment = 0;
+    displayBits = 0;
+}
+
+void DisplayStag6::set(int value) {
+    displayBits = displayBits & (~DISPLAY_SEGMENTS_BITMASK);
+    switch(value) {
+        case 1:
+            displayBits |= (DISPLAY_1_B_BITMASK | DISPLAY_1_C_BITMASK);
+            break;
+        case 2:
+            displayBits |= (DISPLAY_2_A_BITMASK | DISPLAY_2_B_BITMASK | DISPLAY_2_D_BITMASK | DISPLAY_2_E_BITMASK | DISPLAY_2_G_BITMASK);
+            break;
+        case 3:
+            displayBits |= (DISPLAY_3_A_BITMASK | DISPLAY_3_B_BITMASK | DISPLAY_3_C_BITMASK | DISPLAY_3_D_BITMASK | DISPLAY_3_G_BITMASK);
+            break;
+        case 4:
+            displayBits |= DISPLAY_NUM_4_BITMASK;
+            break;
+        case 5:
+            displayBits |= DISPLAY_NUM_5_BITMASK;
+            break;
+        case 6:
+            displayBits |= DISPLAY_NUM_6_BITMASK;
+            break;
+    }
+}
+
+void DisplayStag6::setNumber(int value) {
+    displayBits &= (~DISPLAY_NUMBERS_BITMASK);
+    switch(value) {
+        case 1:
+            displayBits |= DISPLAY_NUM_1_BITMASK;
+            break;
+        case 2:
+            displayBits |= DISPLAY_NUM_2_BITMASK;
+            break;
+        case 3:
+            displayBits |= DISPLAY_NUM_3_BITMASK;
+            break;
+        case 4:
+            displayBits |= DISPLAY_NUM_4_BITMASK;
+            break;
+        case 5:
+            displayBits |= DISPLAY_NUM_5_BITMASK;
+            break;
+        case 6:
+            displayBits |= DISPLAY_NUM_6_BITMASK;
+            break;
+    }
+}
+
+void DisplayStag6::setThunder(bool on) {
+    if(on) {
+        displayBits |= DISPLAY_THUNDER_BITMASK;
+    } else {
+        displayBits &= (~DISPLAY_THUNDER_BITMASK);
+    }
+}
+
+void DisplayStag6::setDroplet(bool on) {
+    if(on) {
+        displayBits |= DISPLAY_DROPLET_BITMASK;
+    } else {
+        displayBits &= (~DISPLAY_DROPLET_BITMASK);
+    }
+}
+
+void DisplayStag6::update() { 
+    clearPins();
+
+    currentSegment++;
+    if(currentSegment >= 24) {
+        currentSegment = 0;
+    }
+
+    if(displayBits & (1<<currentSegment)){
+        setSegment(currentSegment);
+    }
+}
+
+void DisplayStag6::clearPins() {
+    for(int i = 0; i < 6; i++) {
+        pinMode(pins[i], INPUT);
+        digitalWrite(pins[i], LOW);
+    }
+}
+
+void DisplayStag6::setSegment(int segment){
+    int pinValue = segmentValues[segment];
+
+    for(int i = 0; i < 6; i++) {
+        int currentPin = (pinValue >> (i*2)) & 0b11;
+        if(currentPin & 0b10) {
+            pinMode(pins[i], OUTPUT);
+            if(currentPin & 0b01) {
+                digitalWrite(pins[i], HIGH);
+            }
+        }
+    }
+}
