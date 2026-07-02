@@ -1,11 +1,11 @@
-
+/*
 Pins
 
-A       BATT         -   -
-B               |   | | | |
-C                    -   -
-D                   | | | |
-E               |    -   -
+A       BATT       -   -
+B               | | | | |
+C                  -   -
+D               | | | | |
+E                  -   -
 F       DROPLET             %
 
 */
@@ -15,8 +15,8 @@ F       DROPLET             %
 #define DISPLAY_DROPLET_RED   (LHLZLZ)
 #define DISPLAY_DROPLET_GREEN (LHHHHZ) 
 #define DISPLAY_PERCENT   (HHZLZZ)
-#define DISPLAY_1_A       (HZHLZZ)
-#define DISPLAY_1_B       (HZHZLZ)
+#define DISPLAY_1_B       (HZHLZZ)
+#define DISPLAY_1_C       (HZHZLZ)
 #define DISPLAY_2_A       (LZZHLZ)
 #define DISPLAY_2_B       (HZZLHZ)
 #define DISPLAY_2_C       (HHLHZZ)
@@ -39,6 +39,3 @@ F B
 E C
  D
 */
-
-/*
-
