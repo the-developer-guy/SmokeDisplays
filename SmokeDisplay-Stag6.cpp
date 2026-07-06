@@ -101,7 +101,7 @@ void DisplayStag6::update() {
         currentSegment = 0;
     }
 
-    if(displayBits & (1<<currentSegment)){
+    if(displayBits & ((1ul)<<currentSegment)){
         setSegment(currentSegment);
     }
 }
@@ -114,10 +114,10 @@ void DisplayStag6::clearPins() {
 }
 
 void DisplayStag6::setSegment(int segment){
-    int pinValue = segmentValues[segment];
+    uint32_t pinValue = segmentValues[segment];
 
     for(int i = 0; i < 6; i++) {
-        int currentPin = (pinValue >> (i*2)) & 0b11;
+        uint32_t currentPin = (pinValue >> (i*2)) & 0b11;
         if(currentPin & 0b10) {
             pinMode(pins[i], OUTPUT);
             if(currentPin & 0b01) {
