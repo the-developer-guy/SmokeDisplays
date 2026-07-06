@@ -77,20 +77,20 @@ void DisplayStag6::setNumber(int value) {
     }
 }
 
-void DisplayStag6::setThunder(bool on) {
-    if(on) {
-        displayBits |= DISPLAY_THUNDER_BITMASK;
-    } else {
-        displayBits &= (~DISPLAY_THUNDER_BITMASK);
-    }
+void DisplayStag6::thunderOn() {
+    displayBits |= DISPLAY_THUNDER_BITMASK;
 }
 
-void DisplayStag6::setDroplet(bool on) {
-    if(on) {
-        displayBits |= DISPLAY_DROPLET_BITMASK;
-    } else {
-        displayBits &= (~DISPLAY_DROPLET_BITMASK);
-    }
+void DisplayStag6::dropletOn() {
+    displayBits |= DISPLAY_DROPLET_BITMASK;
+}
+
+void DisplayStag6::thunderOff() {
+    displayBits &= (~DISPLAY_THUNDER_BITMASK);
+}
+
+void DisplayStag6::dropletOff() {
+    displayBits &= (~DISPLAY_DROPLET_BITMASK);
 }
 
 void DisplayStag6::update() { 

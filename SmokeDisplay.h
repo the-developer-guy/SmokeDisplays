@@ -13,8 +13,10 @@ class DisplayStag6
     void begin();
     void set(int value);
     void setNumber(int value);
-    void setThunder(bool on);
-    void setDroplet(bool on);
+    void thunderOn();
+    void dropletOn();
+    void thunderOff();
+    void dropletOff();
     void update();
   private:
     uint32_t displayBits;
