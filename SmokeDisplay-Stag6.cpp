@@ -1,5 +1,5 @@
 /*
-  SmokeDisplay.cpp - Library for salvaged smoke displays.
+  SmokeDisplay-Stag6.cpp - Library for salvaged smoke displays.
   Created by DURUCZ Béla, July 2, 2026.
 */
 
