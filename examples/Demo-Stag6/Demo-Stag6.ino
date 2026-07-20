@@ -1,35 +1,71 @@
+/*
+  Test application for Stag Bar 180k puff 6in1 "disposable" vape display module.
+  Pinout:
+
+  2 3 4 5 6 7
+  A B C D E F
+   -   -
+| | | | | ⚡
+   -   -
+| | | | | 💧
+   -   -
+     4
+   5   3
+   6   2
+     1 
+*/
+
 #include "SmokeDisplay.h"
 
+// Create an instance of the display.
 DisplayStag6 display(2, 3, 4, 5, 6, 7);
-uint32_t task, task2;
-int num = 0;
+
+uint32_t displayUpdateTask, countTask;
+int numberValue = 0;
+int numberSegment = 0;
 bool on = false;
 
 void setup() {
   display.begin();
-  task = micros();
-  task2 = millis();
-  Serial.begin(115200);
+
+  displayUpdateTask = micros();
+  countTask = millis();
 }
 
 void loop() {
-    if(micros() > task) {
-      task += 200;
-      display.update();
+
+  // Call display.update() frequently to prevent flickering!
+  if (micros() > displayUpdateTask) {
+    displayUpdateTask += 200;
+    display.update();
+  }
+
+  if (millis() > countTask) {
+    countTask += 500;
+
+    // Example to set a value on the 2.5 digit 7-segment display.
+    display.set(numberValue);
+    numberValue++;
+    if (numberValue > 199) {
+      numberValue = 0;
     }
 
-    if(millis() > task2) {
-      task2 += 1000;
-      num++;
-      if(num > 6) {
-        num = 1;
-      }
-      display.setNumber(num);
-      display.set(num);
-      display.setDroplet(on);
-      display.setThunder(!on);
-      on = !on;
+    // Example to set a number on the 6-number display. 0 means no active number.
+    display.setNumber(numberSegment);
+    numberSegment++;
+    if (numberSegment > 6) {
+      numberSegment = 0;
     }
-    
-    
+
+    // Example on using the thunder and droplet icons.
+    if (on) {
+      display.dropletOff();
+      display.thunderOn();
+
+    } else {
+      display.dropletOn();
+      display.thunderOff();
+    }
+    on = !on;
+  }
 }
