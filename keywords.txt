@@ -1,0 +1,9 @@
+DisplayStag6	KEYWORD1
+begin	KEYWORD2
+set	KEYWORD2
+setNumber	KEYWORD2
+thunderOn	KEYWORD2
+thunderOff	KEYWORD2
+dropletOn	KEYWORD2
+dropletOff	KEYWORD2
+update  KEYWORD2
