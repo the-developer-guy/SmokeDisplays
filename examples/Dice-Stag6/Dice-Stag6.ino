@@ -18,10 +18,10 @@
 
 #include "SmokeDisplay.h"
 
-#define MODE_MINUS  (10)
-#define MODE_PLUS   (8)
-#define DICE_ROLL   (9)
-#define MODE_COUNT  (9)
+#define MODE_MINUS (10)
+#define MODE_PLUS (8)
+#define DICE_ROLL (9)
+#define MODE_COUNT (9)
 
 bool minusPressed();
 bool plusPressed();
@@ -34,7 +34,7 @@ void displayMode();
 DisplayStag6 display(2, 3, 4, 5, 6, 7);
 
 uint32_t displayUpdateTask, buttonTask;
-uint8_t modes[MODE_COUNT] = {2, 3, 4, 6, 8, 10, 12, 20, 100};
+uint8_t modes[MODE_COUNT] = { 2, 3, 4, 6, 8, 10, 12, 20, 100 };
 int8_t currentMode = 0;
 
 int minusLastState = HIGH;
@@ -65,38 +65,38 @@ void loop() {
     display.update();
   }
 
-  if(millis() > buttonTask) {
+  if (millis() > buttonTask) {
     buttonTask += 50;
 
-    if(minusPressed()) {
+    if (minusPressed()) {
       Serial.println("-");
       currentMode--;
-      if(currentMode < 0){
+      if (currentMode < 0) {
         currentMode = 0;
       }
       displayMode();
     }
 
-    if(plusPressed()) {
+    if (plusPressed()) {
       Serial.println("+");
       currentMode++;
-      if(currentMode >= MODE_COUNT) {
-        currentMode = MODE_COUNT-1;
+      if (currentMode >= MODE_COUNT) {
+        currentMode = MODE_COUNT - 1;
       }
       displayMode();
     }
 
-    if(rollPressed()) {
+    if (rollPressed()) {
       Serial.println("roll");
       roll(modes[currentMode]);
     }
   }
 }
 
-bool minusPressed(){
+bool minusPressed() {
   int minusCurrentState = digitalRead(MODE_MINUS);
   bool retval = false;
-  if(minusCurrentState == LOW && minusLastState == HIGH) {
+  if (minusCurrentState == LOW && minusLastState == HIGH) {
     retval = true;
   }
   minusLastState = minusCurrentState;
@@ -107,7 +107,7 @@ bool minusPressed(){
 bool plusPressed() {
   int plusCurrentState = digitalRead(MODE_PLUS);
   bool retval = false;
-  if(plusCurrentState == LOW && plusLastState == HIGH) {
+  if (plusCurrentState == LOW && plusLastState == HIGH) {
     retval = true;
   }
   plusLastState = plusCurrentState;
@@ -118,7 +118,7 @@ bool plusPressed() {
 bool rollPressed() {
   int rollCurrentState = digitalRead(DICE_ROLL);
   bool retval = false;
-  if(rollCurrentState == LOW && rollLastState == HIGH) {
+  if (rollCurrentState == LOW && rollLastState == HIGH) {
     retval = true;
   }
   rollLastState = rollCurrentState;
@@ -126,17 +126,17 @@ bool rollPressed() {
   return retval;
 }
 
-void roll(int type){
-  long result = random(1, type+1);
+void roll(int type) {
+  long result = random(1, type + 1);
   setDisplay(type, result);
   display.thunderOn();
 }
 
-void setDisplay(int type, int number){
+void setDisplay(int type, int number) {
   display.set(-1);
   display.setNumber(0);
 
-  if(type <= 6) {
+  if (type <= 6) {
     display.setNumber(number);
   } else {
     display.set(number);
