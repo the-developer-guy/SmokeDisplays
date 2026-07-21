@@ -18,8 +18,8 @@
 
 #include "SmokeDisplay.h"
 
-#define MODE_MINUS  (8)
-#define MODE_PLUS   (10)
+#define MODE_MINUS  (10)
+#define MODE_PLUS   (8)
 #define DICE_ROLL   (9)
 #define MODE_COUNT  (9)
 
@@ -27,13 +27,14 @@ bool minusPressed();
 bool plusPressed();
 bool rollPressed();
 void roll(int type);
+void setDisplay(int type, int number);
 
 // Create an instance of the display.
 DisplayStag6 display(2, 3, 4, 5, 6, 7);
 
 uint32_t displayUpdateTask, buttonTask;
 uint8_t modes[MODE_COUNT] = {2, 3, 4, 6, 8, 10, 12, 20, 100};
-uint8_t currentMode = 0;
+int8_t currentMode = 0;
 
 int minusLastState = HIGH;
 int plusLastState = HIGH;
@@ -64,10 +65,22 @@ void loop() {
 
     if(minusPressed()) {
       Serial.println("-");
+      currentMode--;
+      if(currentMode < 0){
+        currentMode = 0;
+      }
+      setDisplay(modes[currentMode], modes[currentMode]);
+      display.thunderOff();
     }
 
     if(plusPressed()) {
       Serial.println("+");
+      currentMode++;
+      if(currentMode >= MODE_COUNT) {
+        currentMode = MODE_COUNT-1;
+      }
+      setDisplay(modes[currentMode], modes[currentMode]);
+      display.thunderOff();
     }
 
     if(rollPressed()) {
@@ -112,13 +125,17 @@ bool rollPressed() {
 
 void roll(int type){
   long result = random(1, type+1);
+  setDisplay(type, result);
+  display.thunderOn();
+}
 
+void setDisplay(int type, int number){
   display.set(-1);
   display.setNumber(0);
 
   if(type <= 6) {
-    display.setNumber(result);
+    display.setNumber(number);
   } else {
-    display.set(result);
+    display.set(number);
   }
 }
