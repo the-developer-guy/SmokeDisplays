@@ -28,6 +28,7 @@ bool plusPressed();
 bool rollPressed();
 void roll(int type);
 void setDisplay(int type, int number);
+void displayMode();
 
 // Create an instance of the display.
 DisplayStag6 display(2, 3, 4, 5, 6, 7);
@@ -50,6 +51,10 @@ void setup() {
 
   displayUpdateTask = micros();
   buttonTask = millis();
+
+  // Start with a classic D6
+  currentMode = 3;
+  displayMode();
 }
 
 void loop() {
@@ -69,8 +74,7 @@ void loop() {
       if(currentMode < 0){
         currentMode = 0;
       }
-      setDisplay(modes[currentMode], modes[currentMode]);
-      display.thunderOff();
+      displayMode();
     }
 
     if(plusPressed()) {
@@ -79,8 +83,7 @@ void loop() {
       if(currentMode >= MODE_COUNT) {
         currentMode = MODE_COUNT-1;
       }
-      setDisplay(modes[currentMode], modes[currentMode]);
-      display.thunderOff();
+      displayMode();
     }
 
     if(rollPressed()) {
@@ -138,4 +141,9 @@ void setDisplay(int type, int number){
   } else {
     display.set(number);
   }
+}
+
+void displayMode() {
+  setDisplay(modes[currentMode], modes[currentMode]);
+  display.thunderOff();
 }
