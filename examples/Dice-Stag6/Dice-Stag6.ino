@@ -26,12 +26,14 @@
 bool minusPressed();
 bool plusPressed();
 bool rollPressed();
+void roll(int type);
 
 // Create an instance of the display.
 DisplayStag6 display(2, 3, 4, 5, 6, 7);
 
 uint32_t displayUpdateTask, buttonTask;
 uint8_t modes[MODE_COUNT] = {2, 3, 4, 6, 8, 10, 12, 20, 100};
+uint8_t currentMode = 0;
 
 int minusLastState = HIGH;
 int plusLastState = HIGH;
@@ -70,6 +72,7 @@ void loop() {
 
     if(rollPressed()) {
       Serial.println("roll");
+      roll(modes[currentMode]);
     }
   }
 }
@@ -105,4 +108,17 @@ bool rollPressed() {
   rollLastState = rollCurrentState;
 
   return retval;
+}
+
+void roll(int type){
+  long result = random(1, type+1);
+
+  display.set(-1);
+  display.setNumber(0);
+
+  if(type <= 6) {
+    display.setNumber(result);
+  } else {
+    display.set(result);
+  }
 }
