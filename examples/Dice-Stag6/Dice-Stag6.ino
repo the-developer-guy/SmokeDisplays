@@ -21,7 +21,7 @@
 #define MODE_MINUS (10)
 #define MODE_PLUS (8)
 #define DICE_ROLL (9)
-#define MODE_COUNT (9)
+#define MODE_COUNT (11)
 
 bool minusPressed();
 bool plusPressed();
@@ -34,7 +34,7 @@ void displayMode();
 DisplayStag6 display(2, 3, 4, 5, 6, 7);
 
 uint32_t displayUpdateTask, buttonTask;
-uint8_t modes[MODE_COUNT] = { 2, 3, 4, 6, 8, 10, 12, 20, 100 };
+uint8_t modes[MODE_COUNT] = { 2, 3, 4, 6, 8, 10, 12, 16, 20, 30, 100 };
 int8_t currentMode = 0;
 
 int minusLastState = HIGH;
