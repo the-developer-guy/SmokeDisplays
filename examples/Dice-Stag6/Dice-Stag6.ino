@@ -1,19 +1,31 @@
 /*
   Digital dice from D2 to D100.
   Display: Stag Bar 180k puff 6in1 "disposable" vape display module.
-  Pinout:
+  
+  Requires 3 switches/buttons, example pinout:
+    Mode -    Roll    Mode +
+      10        9       8
+
+ GND   10   GND    9   GND    8
+  |     |    |     |    |     |
+  |-----|    |-----|    |-----|
+  |  O  |    |  O  |    |  O  |
+  |-----|    |-----|    |-----|
+  |     |    |     |    |     |
+
+  Display pinout:
 
   2 3 4 5 6 7
   A B C D E F
-   -   -
-| | | | | ⚡
-   -   -
-| | | | | 💧
-   -   -
-     4
-   5   3
-   6   2
-     1 
+     -   -
+  | | | | | ⚡
+     -   -
+  | | | | | 💧
+     -   -
+       4
+     5   3
+     6   2
+       1 
 */
 
 #include "SmokeDisplay.h"
