@@ -1,0 +1,165 @@
+/*
+  Digital dice from D2 to D100.
+  Display: Stag Bar 180k puff 6in1 "disposable" vape display module.
+  
+  ************************************************
+  Requires an ESP32-C3 Supermini and a custom PCB.
+  ************************************************
+
+  Or 3 switches/buttons, example pinout:
+    Mode -    Roll    Mode +
+      9         4        3
+
+ GND    9   GND    4   GND    3
+  |     |    |     |    |     |
+  |-----|    |-----|    |-----|
+  |  O  |    |  O  |    |  O  |
+  |-----|    |-----|    |-----|
+  |     |    |     |    |     |
+
+  Display pinout:
+
+  0  1  2  10 20 21
+  A  B  C  D  E  F
+     -   -
+  | | | | | ⚡
+     -   -
+  | | | | | 💧
+     -   -
+       4
+     5   3
+     6   2
+       1 
+*/
+
+#include "SmokeDisplay.h"
+
+#define MODE_MINUS (9)
+#define MODE_PLUS (3)
+#define DICE_ROLL (4)
+#define MODE_COUNT (11)
+
+bool minusPressed();
+bool plusPressed();
+bool rollPressed();
+void roll(int type);
+void setDisplay(int type, int number);
+void displayMode();
+
+// Create an instance of the display.
+DisplayStag6 display(0, 1, 2, 10, 20, 21);
+
+uint32_t displayUpdateTask, buttonTask;
+uint8_t modes[MODE_COUNT] = { 2, 3, 4, 6, 8, 10, 12, 16, 20, 30, 100 };
+int8_t currentMode = 0;
+
+int minusLastState = HIGH;
+int plusLastState = HIGH;
+int rollLastState = HIGH;
+
+void setup() {
+  display.begin();
+  Serial.begin(115200);
+
+  pinMode(MODE_MINUS, INPUT_PULLUP);
+  pinMode(MODE_PLUS, INPUT_PULLUP);
+  pinMode(DICE_ROLL, INPUT_PULLUP);
+
+  displayUpdateTask = micros();
+  buttonTask = millis();
+
+  // Start with a classic D6
+  currentMode = 3;
+  displayMode();
+}
+
+void loop() {
+
+  // Call display.update() frequently to prevent flickering!
+  if (micros() > displayUpdateTask) {
+    displayUpdateTask += 200;
+    display.update();
+  }
+
+  if (millis() > buttonTask) {
+    buttonTask += 50;
+
+    if (minusPressed()) {
+      Serial.println("-");
+      currentMode--;
+      if (currentMode < 0) {
+        currentMode = 0;
+      }
+      displayMode();
+    }
+
+    if (plusPressed()) {
+      Serial.println("+");
+      currentMode++;
+      if (currentMode >= MODE_COUNT) {
+        currentMode = MODE_COUNT - 1;
+      }
+      displayMode();
+    }
+
+    if (rollPressed()) {
+      Serial.println("roll");
+      roll(modes[currentMode]);
+    }
+  }
+}
+
+bool minusPressed() {
+  int minusCurrentState = digitalRead(MODE_MINUS);
+  bool retval = false;
+  if (minusCurrentState == LOW && minusLastState == HIGH) {
+    retval = true;
+  }
+  minusLastState = minusCurrentState;
+
+  return retval;
+}
+
+bool plusPressed() {
+  int plusCurrentState = digitalRead(MODE_PLUS);
+  bool retval = false;
+  if (plusCurrentState == LOW && plusLastState == HIGH) {
+    retval = true;
+  }
+  plusLastState = plusCurrentState;
+
+  return retval;
+}
+
+bool rollPressed() {
+  int rollCurrentState = digitalRead(DICE_ROLL);
+  bool retval = false;
+  if (rollCurrentState == LOW && rollLastState == HIGH) {
+    retval = true;
+  }
+  rollLastState = rollCurrentState;
+
+  return retval;
+}
+
+void roll(int type) {
+  long result = random(1, type + 1);
+  setDisplay(type, result);
+  display.thunderOn();
+}
+
+void setDisplay(int type, int number) {
+  display.set(-1);
+  display.setNumber(0);
+
+  if (type <= 6) {
+    display.setNumber(number);
+  } else {
+    display.set(number);
+  }
+}
+
+void displayMode() {
+  setDisplay(modes[currentMode], modes[currentMode]);
+  display.thunderOff();
+}
