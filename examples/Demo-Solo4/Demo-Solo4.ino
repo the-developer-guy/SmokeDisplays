@@ -22,6 +22,7 @@ uint32_t displayUpdateTask, countTask;
 int numberValue = 0;
 int numberSegment = 0;
 bool on = false;
+int trit = 0;
 
 void setup() {
   display.begin();
@@ -48,15 +49,27 @@ void loop() {
       numberValue = 0;
     }
 
-    // Example on using the thunder and droplet icons.
-    if (on) {
-      display.dropletOff();
-      display.batteryOn();
-      display.percentOff();
+    // Example on using the battery, droplet and percent icons.
+    trit++;
+    switch(trit) {
+      default:
+        trit = 0;
+      case 0:
+        display.batteryRed();
+        display.dropletGreen();
+        break;
+      case 1:
+        display.batteryGreen();
+        display.dropletOff();
+        break;
+      case 2:
+        display.batteryOff();
+        display.dropletRed();
+    }
 
+    if (on) {
+      display.percentOff();
     } else {
-      display.dropletOn();
-      display.batteryOff();
       display.percentOn();
     }
     on = !on;
