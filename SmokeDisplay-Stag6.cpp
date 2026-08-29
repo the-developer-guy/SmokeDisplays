@@ -7,8 +7,9 @@
 #include "SmokeDisplay.h"
 #include "6pin-2.5digit-6num.h"
 
+#define SEGMENT_COUNT (24)
 
-static uint32_t segmentValues[24] = {DISPLAY_1_B_PINS, DISPLAY_1_C_PINS,
+static uint32_t segmentValues[SEGMENT_COUNT] = {DISPLAY_1_B_PINS, DISPLAY_1_C_PINS,
     DISPLAY_2_A_PINS, DISPLAY_2_B_PINS, DISPLAY_2_C_PINS, DISPLAY_2_D_PINS, DISPLAY_2_E_PINS, DISPLAY_2_F_PINS, DISPLAY_2_G_PINS,
     DISPLAY_3_A_PINS, DISPLAY_3_B_PINS, DISPLAY_3_C_PINS, DISPLAY_3_D_PINS, DISPLAY_3_E_PINS, DISPLAY_3_F_PINS, DISPLAY_3_G_PINS,
     DISPLAY_THUNDER_PINS, DISPLAY_DROPLET_PINS,
@@ -103,7 +104,7 @@ void DisplayStag6::update() {
     clearPins();
 
     currentSegment++;
-    if(currentSegment >= 24) {
+    if(currentSegment >= SEGMENT_COUNT) {
         currentSegment = 0;
     }
 
