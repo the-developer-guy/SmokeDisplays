@@ -1,19 +1,20 @@
 /*
-  SmokeDisplay-Stag6.cpp - Library for salvaged smoke displays.
-  Created by DURUCZ Béla, July 2, 2026.
+  SmokeDisplay-VapSolo4-bicolor.cpp - Library for salvaged smoke displays.
+  Created by DURUCZ Béla, August 29, 2026.
 */
 
 #include "Arduino.h"
 #include "SmokeDisplay.h"
-#include "6pin-2.5digit-6num.h"
+#include "6pin-2.5digit-bicolor.h"
 
-#define SEGMENT_COUNT (24)
+#define SEGMENT_COUNT (21)
 
 static uint32_t segmentValues[SEGMENT_COUNT] = {DISPLAY_1_B_PINS, DISPLAY_1_C_PINS,
     DISPLAY_2_A_PINS, DISPLAY_2_B_PINS, DISPLAY_2_C_PINS, DISPLAY_2_D_PINS, DISPLAY_2_E_PINS, DISPLAY_2_F_PINS, DISPLAY_2_G_PINS,
     DISPLAY_3_A_PINS, DISPLAY_3_B_PINS, DISPLAY_3_C_PINS, DISPLAY_3_D_PINS, DISPLAY_3_E_PINS, DISPLAY_3_F_PINS, DISPLAY_3_G_PINS,
-    DISPLAY_THUNDER_PINS, DISPLAY_DROPLET_PINS,
-    DISPLAY_NUM_1_PINS, DISPLAY_NUM_2_PINS, DISPLAY_NUM_3_PINS, DISPLAY_NUM_4_PINS, DISPLAY_NUM_5_PINS, DISPLAY_NUM_6_PINS};
+    DISPLAY_BATT_RED_PINS, DISPLAY_BATT_GREEN_PINS,
+    DISPLAY_DROPLET_RED_PINS, DISPLAY_DROPLET_GREEN_PINS,
+    DISPLAY_PERCENT_PINS};
 
 static uint32_t segments[3][10] = {
     {0, DISPLAY_1_NUM_1, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -23,7 +24,7 @@ static uint32_t segments[3][10] = {
         DISPLAY_3_NUM_5, DISPLAY_3_NUM_6, DISPLAY_3_NUM_7, DISPLAY_3_NUM_8, DISPLAY_3_NUM_9}
 };
 
-DisplayStag6::DisplayStag6(int pinA, int pinB, int pinC, int pinD, int pinE, int pinF) { 
+DisplaySolo4::DisplaySolo4(int pinA, int pinB, int pinC, int pinD, int pinE, int pinF) { 
     pins[0] = pinA;
     pins[1] = pinB;
     pins[2] = pinC;
@@ -32,13 +33,13 @@ DisplayStag6::DisplayStag6(int pinA, int pinB, int pinC, int pinD, int pinE, int
     pins[5] = pinF;
 }
 
-void DisplayStag6::begin() {
+void DisplaySolo4::begin() {
     clearPins();
     currentSegment = 0;
     displayBits = 0;
 }
 
-void DisplayStag6::set(int value) {
+void DisplaySolo4::set(int value) {
     displayBits = displayBits & (~DISPLAY_SEGMENTS_BITMASK);
     if(value > 199 || value < 0) {
         return;
@@ -60,47 +61,43 @@ void DisplayStag6::set(int value) {
     displayBits |= segments[2][digit3];
 }
 
-void DisplayStag6::setNumber(int value) {
-    displayBits &= (~DISPLAY_NUMBERS_BITMASK);
-    switch(value) {
-        case 1:
-            displayBits |= DISPLAY_NUM_1_BITMASK;
-            break;
-        case 2:
-            displayBits |= DISPLAY_NUM_2_BITMASK;
-            break;
-        case 3:
-            displayBits |= DISPLAY_NUM_3_BITMASK;
-            break;
-        case 4:
-            displayBits |= DISPLAY_NUM_4_BITMASK;
-            break;
-        case 5:
-            displayBits |= DISPLAY_NUM_5_BITMASK;
-            break;
-        case 6:
-            displayBits |= DISPLAY_NUM_6_BITMASK;
-            break;
-    }
+void DisplaySolo4::batteryRed() {
+    displayBits &= (~DISPLAY_BATTERY_GREEN_BITMASK);
+    displayBits |= DISPLAY_BATTERY_RED_BITMASK;
 }
 
-void DisplayStag6::thunderOn() {
-    displayBits |= DISPLAY_THUNDER_BITMASK;
+void DisplaySolo4::batteryGreen() {
+    displayBits &= (~DISPLAY_BATTERY_RED_BITMASK);
+    displayBits |= DISPLAY_BATTERY_GREEN_BITMASK;
 }
 
-void DisplayStag6::dropletOn() {
-    displayBits |= DISPLAY_DROPLET_BITMASK;
+void DisplaySolo4::dropletRed() {
+    displayBits &= (~DISPLAY_DROPLET_GREEN_BITMASK);
+    displayBits |= DISPLAY_DROPLET_RED_BITMASK;
 }
 
-void DisplayStag6::thunderOff() {
-    displayBits &= (~DISPLAY_THUNDER_BITMASK);
+void DisplaySolo4::dropletGreen() {
+    displayBits &= (~DISPLAY_DROPLET_RED_BITMASK);
+    displayBits |= DISPLAY_DROPLET_GREEN_BITMASK;
 }
 
-void DisplayStag6::dropletOff() {
-    displayBits &= (~DISPLAY_DROPLET_BITMASK);
+void DisplaySolo4::percentOn() {
+    displayBits |= DISPLAY_PERCENT_BITMASK;
 }
 
-void DisplayStag6::update() { 
+void DisplaySolo4::batteryOff() {
+    displayBits &= (~(DISPLAY_BATTERY_RED_BITMASK | DISPLAY_BATTERY_GREEN_BITMASK));
+}
+
+void DisplaySolo4::dropletOff() {
+    displayBits &= (~(DISPLAY_DROPLET_RED_BITMASK | DISPLAY_DROPLET_GREEN_BITMASK));
+}
+
+void DisplaySolo4::percentOff() {
+    displayBits &= (~DISPLAY_PERCENT_BITMASK);
+}
+
+void DisplaySolo4::update() { 
     clearPins();
 
     currentSegment++;
@@ -113,14 +110,14 @@ void DisplayStag6::update() {
     }
 }
 
-void DisplayStag6::clearPins() {
+void DisplaySolo4::clearPins() {
     for(int i = 0; i < 6; i++) {
         pinMode(pins[i], INPUT);
         digitalWrite(pins[i], LOW);
     }
 }
 
-void DisplayStag6::setSegment(int segment){
+void DisplaySolo4::setSegment(int segment){
     uint32_t pinValue = segmentValues[segment];
 
     for(int i = 0; i < 6; i++) {
