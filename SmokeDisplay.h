@@ -32,8 +32,10 @@ class DisplaySolo4
     DisplaySolo4(int pinA, int pinB, int pinC, int pinD, int pinE, int pinF);
     void begin();
     void set(int value);
-    void batteryOn();
-    void dropletOn();
+    void batteryRed();
+    void batteryGreen();
+    void dropletRed();
+    void dropletGreen();
     void percentOn();
     void batteryOff();
     void dropletOff();

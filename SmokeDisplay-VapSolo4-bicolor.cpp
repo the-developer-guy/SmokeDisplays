@@ -61,12 +61,24 @@ void DisplaySolo4::set(int value) {
     displayBits |= segments[2][digit3];
 }
 
-void DisplaySolo4::batteryOn() {
-    displayBits |= DISPLAY_BATTERY_BITMASK;
+void DisplaySolo4::batteryRed() {
+    displayBits &= (~DISPLAY_BATTERY_GREEN_BITMASK);
+    displayBits |= DISPLAY_BATTERY_RED_BITMASK;
 }
 
-void DisplaySolo4::dropletOn() {
-    displayBits |= DISPLAY_DROPLET_BITMASK;
+void DisplaySolo4::batteryGreen() {
+    displayBits &= (~DISPLAY_BATTERY_RED_BITMASK);
+    displayBits |= DISPLAY_BATTERY_GREEN_BITMASK;
+}
+
+void DisplaySolo4::dropletRed() {
+    displayBits &= (~DISPLAY_DROPLET_GREEN_BITMASK);
+    displayBits |= DISPLAY_DROPLET_RED_BITMASK;
+}
+
+void DisplaySolo4::dropletGreen() {
+    displayBits &= (~DISPLAY_DROPLET_RED_BITMASK);
+    displayBits |= DISPLAY_DROPLET_GREEN_BITMASK;
 }
 
 void DisplaySolo4::percentOn() {
@@ -74,11 +86,11 @@ void DisplaySolo4::percentOn() {
 }
 
 void DisplaySolo4::batteryOff() {
-    displayBits &= (~DISPLAY_BATTERY_BITMASK);
+    displayBits &= (~(DISPLAY_BATTERY_RED_BITMASK | DISPLAY_BATTERY_GREEN_BITMASK));
 }
 
 void DisplaySolo4::dropletOff() {
-    displayBits &= (~DISPLAY_DROPLET_BITMASK);
+    displayBits &= (~(DISPLAY_DROPLET_RED_BITMASK | DISPLAY_DROPLET_GREEN_BITMASK));
 }
 
 void DisplaySolo4::percentOff() {
