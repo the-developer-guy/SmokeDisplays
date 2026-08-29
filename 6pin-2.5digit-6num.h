@@ -13,6 +13,9 @@ A B C D E F
 
 */
 
+// 00: High-Z
+// 10: output, LOW
+// 11: output, HIGH
 #define DISPLAY_1_B_PINS       ((0b11 << 10) | (0b00 << 8) | (0b00 << 6) | (0b10 << 4) | (0b00 << 2) | (0b00 << 0))
 #define DISPLAY_1_C_PINS       ((0b00 << 10) | (0b00 << 8) | (0b10 << 6) | (0b00 << 4) | (0b00 << 2) | (0b11 << 0))
 #define DISPLAY_2_A_PINS       ((0b00 << 10) | (0b00 << 8) | (0b00 << 6) | (0b00 << 4) | (0b11 << 2) | (0b10 << 0))
