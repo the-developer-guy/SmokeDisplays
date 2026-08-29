@@ -26,5 +26,24 @@ class DisplayStag6
     void setSegment(int segment);
 };
 
+class DisplaySolo4
+{
+  public:
+    DisplaySolo4(int pinA, int pinB, int pinC, int pinD, int pinE, int pinF);
+    void begin();
+    void set(int value);
+    void batteryOn();
+    void dropletOn();
+    void percentOn();
+    void batteryOff();
+    void dropletOff();
+    void percentOff();
+
+    void update();
+  private:
+    int _pinA, _pinB, _pinC, _pinD, _pinE, _pinF;
+    void clearPins();
+};
+
 #endif
 
