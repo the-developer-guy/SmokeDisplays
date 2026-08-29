@@ -1,4 +1,15 @@
 /*
+Test application for Vapsolo Quads 80000 "disposable" vape display module.
+Module ID: LZ-13WO7
+
+Pinout:
+
+A0  A       BATT       -   -
+A1  B               | | | | |
+A2  C                  -   -
+A3  D               | | | | |
+A4  E                  -   -
+A5  F       DROPLET             %
 
 */
 
