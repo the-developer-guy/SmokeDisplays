@@ -38,11 +38,13 @@ class DisplaySolo4
     void batteryOff();
     void dropletOff();
     void percentOff();
-
     void update();
   private:
-    int _pinA, _pinB, _pinC, _pinD, _pinE, _pinF;
+    uint32_t displayBits;
+    int pins[6];
+    int currentSegment;
     void clearPins();
+    void setSegment(int segment);
 };
 
 #endif

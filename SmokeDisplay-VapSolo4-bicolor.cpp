@@ -7,14 +7,16 @@
 #include "SmokeDisplay.h"
 #include "6pin-2.5digit-bicolor.h"
 
+#define SEGMENT_COUNT (21)
 
-uint32_t segmentValues[24] = {DISPLAY_1_B_PINS, DISPLAY_1_C_PINS,
+static uint32_t segmentValues[SEGMENT_COUNT] = {DISPLAY_1_B_PINS, DISPLAY_1_C_PINS,
     DISPLAY_2_A_PINS, DISPLAY_2_B_PINS, DISPLAY_2_C_PINS, DISPLAY_2_D_PINS, DISPLAY_2_E_PINS, DISPLAY_2_F_PINS, DISPLAY_2_G_PINS,
     DISPLAY_3_A_PINS, DISPLAY_3_B_PINS, DISPLAY_3_C_PINS, DISPLAY_3_D_PINS, DISPLAY_3_E_PINS, DISPLAY_3_F_PINS, DISPLAY_3_G_PINS,
-    DISPLAY_THUNDER_PINS, DISPLAY_DROPLET_PINS,
-    DISPLAY_NUM_1_PINS, DISPLAY_NUM_2_PINS, DISPLAY_NUM_3_PINS, DISPLAY_NUM_4_PINS, DISPLAY_NUM_5_PINS, DISPLAY_NUM_6_PINS};
+    DISPLAY_BATT_RED_PINS, DISPLAY_BATT_GREEN_PINS,
+    DISPLAY_DROPLET_RED_PINS, DISPLAY_DROPLET_GREEN_PINS,
+    DISPLAY_PERCENT_PINS};
 
-uint32_t segments[3][10] = {
+static uint32_t segments[3][10] = {
     {0, DISPLAY_1_NUM_1, 0, 0, 0, 0, 0, 0, 0, 0},
     {DISPLAY_2_NUM_0, DISPLAY_2_NUM_1, DISPLAY_2_NUM_2, DISPLAY_2_NUM_3, DISPLAY_2_NUM_4, 
         DISPLAY_2_NUM_5, DISPLAY_2_NUM_6, DISPLAY_2_NUM_7, DISPLAY_2_NUM_8, DISPLAY_2_NUM_9},
@@ -60,7 +62,7 @@ void DisplaySolo4::set(int value) {
 }
 
 void DisplaySolo4::batteryOn() {
-    displayBits |= DISPLAY_THUNDER_BITMASK;
+    displayBits |= DISPLAY_BATTERY_BITMASK;
 }
 
 void DisplaySolo4::dropletOn() {
@@ -68,11 +70,11 @@ void DisplaySolo4::dropletOn() {
 }
 
 void DisplaySolo4::percentOn() {
-    displayBits |= DISPLAY_DROPLET_BITMASK;
+    displayBits |= DISPLAY_PERCENT_BITMASK;
 }
 
 void DisplaySolo4::batteryOff() {
-    displayBits &= (~DISPLAY_THUNDER_BITMASK);
+    displayBits &= (~DISPLAY_BATTERY_BITMASK);
 }
 
 void DisplaySolo4::dropletOff() {
@@ -80,14 +82,14 @@ void DisplaySolo4::dropletOff() {
 }
 
 void DisplaySolo4::percentOff() {
-    displayBits &= (~DISPLAY_DROPLET_BITMASK);
+    displayBits &= (~DISPLAY_PERCENT_BITMASK);
 }
 
 void DisplaySolo4::update() { 
     clearPins();
 
     currentSegment++;
-    if(currentSegment >= 24) {
+    if(currentSegment >= SEGMENT_COUNT) {
         currentSegment = 0;
     }
 
@@ -100,5 +102,19 @@ void DisplaySolo4::clearPins() {
     for(int i = 0; i < 6; i++) {
         pinMode(pins[i], INPUT);
         digitalWrite(pins[i], LOW);
+    }
+}
+
+void DisplaySolo4::setSegment(int segment){
+    uint32_t pinValue = segmentValues[segment];
+
+    for(int i = 0; i < 6; i++) {
+        uint32_t currentPin = (pinValue >> (i*2)) & 0b11;
+        if(currentPin & 0b10) {
+            pinMode(pins[i], OUTPUT);
+            if(currentPin & 0b01) {
+                digitalWrite(pins[i], HIGH);
+            }
+        }
     }
 }
