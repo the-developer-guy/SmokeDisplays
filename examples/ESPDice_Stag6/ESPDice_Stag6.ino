@@ -8,9 +8,9 @@
 
   Or 3 switches/buttons, example pinout:
     Mode -    Roll    Mode +
-      9         4        3
+      3         4        9
 
- GND    9   GND    4   GND    3
+ GND    3   GND    4   GND    9
   |     |    |     |    |     |
   |-----|    |-----|    |-----|
   |  O  |    |  O  |    |  O  |
@@ -34,8 +34,8 @@
 
 #include "SmokeDisplay.h"
 
-#define MODE_MINUS (9)
-#define MODE_PLUS (3)
+#define MODE_MINUS (3)
+#define MODE_PLUS (9)
 #define DICE_ROLL (4)
 #define MODE_COUNT (11)
 
